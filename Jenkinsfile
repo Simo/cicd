@@ -1,5 +1,5 @@
 pipeline {
-    agent { docker { image 'maven:3.3.3' } }
+    gent { kubernetes }
     stages {
         stage('build') {
             steps {
