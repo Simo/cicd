@@ -1,5 +1,5 @@
 pipeline {
-    gent { kubernetes }
+    agent { kubernetes }
     stages {
         stage('build') {
             steps {
