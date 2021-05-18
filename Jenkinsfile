@@ -28,7 +28,7 @@ spec:
         stage('Run library tests') {
             steps {
                 container('groovy') {
-                    sh './gradlew test'
+                    sh './mvnw build -B'
                 }
             }
         }
