@@ -7,7 +7,7 @@ kind: Pod
 spec:
   containers:
   - name: groovy
-    image: jenkinsci/jnlp-slave
+    image: jenkinsci/jnlp-slave:alpine
     command: ['cat']
     tty: true
     imagePullPolicy: Always
