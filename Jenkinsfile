@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    node {
+      label 'dockersimo'
+    }
+
+  }
   stages {
     stage('Messaggio per il mondo') {
       steps {
