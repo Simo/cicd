@@ -11,9 +11,6 @@ spec:
     command: ['cat']
     tty: true
     imagePullPolicy: Always
-    env:
-    - name: JAVA_HOME
-      value: /usr/lib/jvm/jre-1.8.0-openjdk
 """
         }
     }
@@ -34,11 +31,6 @@ spec:
                     sh './gradlew test'
                 }
             }
-        }
-    }
-    post {
-        always {
-            junit 'build/test-results/**/*.xml'
         }
     }
 }
