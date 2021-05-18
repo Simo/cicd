@@ -1,15 +1,44 @@
 pipeline {
     agent {
-        docker {
-            image 'maven:3.8.1-adoptopenjdk-11'
-            args '-v $HOME/.m2:/root/.m2'
+        kubernetes {
+            yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: groovy
+    image: registry.redhat.io/openshift3/jenkins-slave-base-rhel7:v3.11
+    command: ['cat']
+    tty: true
+    imagePullPolicy: Always
+    env:
+    - name: JAVA_HOME
+      value: /usr/lib/jvm/jre-1.8.0-openjdk
+"""
         }
     }
+    options {
+        skipDefaultCheckout true
+    }
     stages {
-        stage('Build') {
+        stage('Source checkout') {
             steps {
-                sh 'mvn -B'
+                container('groovy') {
+                    checkout scm
+                }
             }
+        }
+        stage('Run library tests') {
+            steps {
+                container('groovy') {
+                    sh './gradlew test'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            junit 'build/test-results/**/*.xml'
         }
     }
 }
