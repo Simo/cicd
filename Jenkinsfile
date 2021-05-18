@@ -7,7 +7,7 @@ kind: Pod
 spec:
   containers:
   - name: groovy
-    image: registry.redhat.io/openshift3/jenkins-slave-base-rhel7:v3.11
+    image: jenkinsci/jnlp-slave
     command: ['cat']
     tty: true
     imagePullPolicy: Always
