@@ -1,16 +1,13 @@
 pipeline {
-  agent {
-    node {
-      label 'dockersimo'
+    agent none
+    stages {
+        stage('Back-end') {
+            agent {
+                docker { image 'maven:3.8.1-adoptopenjdk-11' }
+            }
+            steps {
+                sh 'mvn --version'
+            }
+        }
     }
-
-  }
-  stages {
-    stage('Messaggio per il mondo') {
-      steps {
-        echo 'hello cruel world'
-      }
-    }
-
-  }
 }
