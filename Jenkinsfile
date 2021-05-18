@@ -25,10 +25,10 @@ spec:
                 }
             }
         }
-        stage('Run library tests') {
+        stage('Build') {
             steps {
                 container('groovy') {
-                    sh './mvnw build -B'
+                    sh './mvnw -B compile'
                 }
             }
         }
