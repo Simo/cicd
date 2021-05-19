@@ -54,22 +54,26 @@ spec:
         }
         stage ('Publishing') {
             steps {
-                pom = readMavenPom file: "pom.xml";
-                filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                artifactPath = filesByGlob[0].path;
-                artifactExists = fileExists artifactPath;
-                if(artifactExists) {
-                    echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-                    nexusPublisher(nexusInstanceId: 'nexus3',
+                script {
+                    pom = readMavenPom file: "pom.xml";
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                    artifactPath = filesByGlob[0].path;
+                    artifactExists = fileExists artifactPath;
+                    if(artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                        nexusPublisher(nexusInstanceId: 'nexus3',
                                nexusRepositoryId: 'maven-releases',
                                packages: [[$class: 'MavenPackage',
                                            mavenAssetList: [[classifier: '', extension: '', filePath: artifactPath]],
                                            mavenCoordinate: [artifactId: pom.artifactId, groupId: pom.groupId, packaging: pom.packaging, version: pom.version]]],
                                tagName: 'build-125')
-                } else {
-                    error "*** File: ${artifactPath}, could not be found";
+                    } else {
+                        error "*** File: ${artifactPath}, could not be found";
+                    }
+                
                 }
+                
             }
         }
     }
