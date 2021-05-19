@@ -14,6 +14,13 @@ spec:
 """
         }
     }
+    environment {
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = "you-ip-addr-here:8081"
+        NEXUS_REPOSITORY = "maven-nexus-repo"
+        NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
+    }
     options {
         skipDefaultCheckout true
     }
@@ -32,5 +39,37 @@ spec:
                 }
             }
         }
+        stage('Package') {
+            steps {
+                container('groovy') {
+                    sh './mvnw package -DskipTests=true'
+                }
+            }
+        }
+        stage ('Creating build tag') {
+            steps {
+                createTag nexusInstanceId: 'nexus3', tagAttributesJson: '{"createdBy" : "SimoneBierti"}', tagName: 'build-125'
+            }
+            
+        }
+        stage ('Publishing') {
+            pom = readMavenPom file: "pom.xml";
+            filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+            echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+            artifactPath = filesByGlob[0].path;
+            artifactExists = fileExists artifactPath;
+            if(artifactExists) {
+                echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                nexusPublisher(nexusInstanceId: 'nexus3',
+                               nexusRepositoryId: 'maven-releases',
+                               packages: [[$class: 'MavenPackage',
+                                           mavenAssetList: [[classifier: '', extension: '', filePath: artifactPath]],
+                                           mavenCoordinate: [artifactId: pom.artifactId, groupId: pom.groupId, packaging: pom.packaging, version: pom.version]]],
+                               tagName: 'build-125')
+            } else {
+                error "*** File: ${artifactPath}, could not be found";
+            }
+        }
     }
+    
 }
