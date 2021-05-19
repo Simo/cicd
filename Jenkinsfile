@@ -46,12 +46,6 @@ spec:
                 }
             }
         }
-        stage ('Creating build tag') {
-            steps {
-                createTag nexusInstanceId: 'nexus3', tagAttributesJson: '{"createdBy" : "SimoneBierti"}', tagName: 'build-125'
-            }
-            
-        }
         stage ('Publishing') {
             steps {
                 script {
