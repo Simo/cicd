@@ -17,29 +17,29 @@ spec:
   }
   stages {
     stage('Source checkout') {
-      steps {
-        container(name: 'groovy') {
-          checkout scm
+      parallel {
+        stage('Source checkout') {
+          steps {
+            container(name: 'groovy') {
+              checkout scm
+            }
+
+          }
+        }
+
+        stage('Indica la versione') {
+          steps {
+            input(message: 'Indica il # di versione', submitter: 'versione', submitterParameter: 'numeroVersione', ok: 'Continua', id: 'Alt')
+          }
         }
 
       }
     }
 
     stage('Build') {
-      parallel {
-        stage('Build') {
-          steps {
-            container(name: 'groovy') {
-              sh './mvnw -B compile'
-            }
-
-          }
-        }
-
-        stage('indica la versione') {
-          steps {
-            input 'Indica il # di versione'
-          }
+      steps {
+        container(name: 'groovy') {
+          sh './mvnw -B compile'
         }
 
       }
