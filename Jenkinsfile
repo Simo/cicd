@@ -5,8 +5,9 @@ pipeline {
 apiVersion: v1
 kind: Pod
 metadata:
+  name: jenkins-slave
   labels:
-    name: jenkins-slave
+    app: jenkins-slave
 spec:
   containers:
   - name: groovy
