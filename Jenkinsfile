@@ -4,10 +4,6 @@ pipeline {
       yaml '''
 apiVersion: v1
 kind: Pod
-metadata:
-  name: jenkins-slave
-  labels:
-    app: jenkins-slave
 spec:
   containers:
   - name: groovy
