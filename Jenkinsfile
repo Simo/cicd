@@ -17,25 +17,13 @@ spec:
   }
   stages {
     stage('Source checkout') {
-      parallel {
-        stage('Source checkout') {
           steps {
             container(name: 'groovy') {
               checkout scm
             }
-
           }
-        }
-
-        stage('Indica la versione') {
-          steps {
-            input(message: 'Indica il # di versione', submitter: 'versione', submitterParameter: 'numeroVersione', ok: 'Continua', id: 'Alt')
-            readMavenPom(file: 'pom.xml')
-          }
-        }
-
       }
-    }
+    
 
     stage('Build') {
       steps {
